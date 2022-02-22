@@ -51,7 +51,7 @@ class Project:
                     ".webm", ".avi", ".mkv", ".wav"]:
                 if not audio_file in self.annotations_by_path:
                     annotation = Annotation()
-                    annotation.path = path
+                    annotation.path = self.audio_folder.joinpath(path)
                     self.add_annotation(annotation)
         print("loaded audio folder")
     
@@ -109,6 +109,7 @@ class Project:
             reader = csv.DictReader(file, delimiter='\t')
             for row in reader:
                 annotation = Annotation(row)
+                annotation.path = self.audio_folder.joinpath(annotation.path)
                 if annotation.path.exists():
                     if annotation.path.name in self.modified_annotations:
                         annotation.modified = True
@@ -128,7 +129,6 @@ class Project:
         self.annotations.remove(annotation)
 
     def add_annotation(self, annotation: Annotation):
-        annotation.path = self.audio_folder.joinpath(annotation.path)
         self.annotations_by_path[annotation.path.name] = annotation
         self.annotations.append(annotation)
 
